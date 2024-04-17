@@ -1,0 +1,10 @@
+.env
+.DS_Store
+.vscode
+.secrets
+
+# Node files
+node_modules/
+
+# Typescript files
+dist
