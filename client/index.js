@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log(session_id);
 
     const { Hellgate } = window;
-    const client = await Hellgate.init(session_id, { base_url: 'https://sandbox.hellgate.io' });
+    const client = await Hellgate.init(session_id, { base_url: 'https://staging.hellgate.dev', challenge_3ds_container: document.getElementById("challenge") });
     const cardHandler = await client.use('CARD');
 
     const cardForm = cardHandler.createForm();
@@ -11,14 +11,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const submitButton = document.getElementById('submit-button');
     submitButton.addEventListener('click', async () => {
-        const result = await cardHandler.process();
-      
-        // handle the result
-        if (result.status === 'success') {
-          console.log('Processing is successfully finished');
-          console.log(result);
-        } else {
-          console.log("Processing failed");
+        try {
+          additionalData = {
+            cardholder_name: document.getElementById("cardholder-name").value,
+          };
+
+          const result = await cardHandler.process(additionalData);
+
+          if (result.status === 'success') {
+            console.log('Processing is successfully finished');
+            alert(result.data.token_id);
+          } else {
+            console.log("Processing failed");
+          }
+        } catch (e) {
+          console.log(e.message);
         }
       });
 }); 

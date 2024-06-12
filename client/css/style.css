@@ -1,3 +1,60 @@
-h1 {
-    color: blue;
+*, *::before, *::after {
+    box-sizing: border-box;
 }
+
+* {
+    margin: 0;
+}
+
+body {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+}
+
+input, button, textarea, select {
+    font: inherit;
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+}
+
+#root, #__next {
+    isolation: isolate;
+}
+
+main {
+    position: fixed;
+    inset: 0px;
+    width: 40rem;
+    height: 20rem;
+    max-width: 100vw;
+    max-height: 100dvh;
+    margin: auto;
+}
+
+#main, h1 {
+    margin-bottom: 2rem;
+}
+
+#submit-button {
+    margin-top: 1rem;
+}
+
+.container {
+    position: relative;
+    height: 300px;
+  }
+
+  .bottom {
+    position: absolute;
+    bottom: 0
+  }
