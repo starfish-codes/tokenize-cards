@@ -11,7 +11,7 @@ app.get("/", (_: Request, res: Response): void => {
     res.sendFile(index);
 });
 
-app.get("/session", async (_: Request, res: Response): Promise<void> => {
+app.get("/config", async (_: Request, res: Response): Promise<void> => {
     const headers = new Headers()
     headers.set('Content-Type', 'application/json')
     headers.set('Accept', 'application/json')
@@ -26,7 +26,8 @@ app.get("/session", async (_: Request, res: Response): Promise<void> => {
     const {session_id} = await response.json()
 
     res.send({
-        session_id: session_id
+        session_id: session_id,
+        backend_url: process.env.HELLGATE_BACKEND,
     });
 });
 

@@ -1,8 +1,8 @@
 import { toggleLoading } from "./utils.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const session_id = await fetchSessionId();
-  const client = await initializeClient(session_id);
+  const {session_id, backend_url} = await fetchConfig();
+  const client = await initializeClient(session_id, backend_url);
   const cardHandler = await client.use("CARD");
   const threeDSHandler = await client.use("3DS");
 
@@ -13,18 +13,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   toggleLoading(false);
 });
 
-// Function to fetch session ID
-async function fetchSessionId() {
-  const response = await fetch("/session");
+// Function to fetch session ID and backend URL
+async function fetchConfig() {
+  const response = await fetch("/config");
   const data = await response.json();
-  return data.session_id;
+  return data;
 }
 
 // Function to initialize Hellgate client
-async function initializeClient(session_id) {
+async function initializeClient(session_id, backend_url) {
   const { Hellgate } = window;
   return await Hellgate.init(session_id, {
-    base_url: "https://staging.hellgate.dev",
+    base_url: backend_url,
     challenge_3ds_container: document.getElementById("challenge"),
   });
 }
