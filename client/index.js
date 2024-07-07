@@ -11,6 +11,7 @@ let cardHolderField;
 
 document.addEventListener('DOMContentLoaded', async () => {
   const { session_id, backend_url } = await fetchConfig();
+  if (!session_id) return;
 
   const { Hellgate } = window;
   const client = await Hellgate.init(session_id, {
