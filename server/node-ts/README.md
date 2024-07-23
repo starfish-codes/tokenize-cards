@@ -8,7 +8,7 @@
 ## Setup
 
 ```bash
-cp ../.env.example .env
+cp ../../.env.example .env
 ```
 
 Update the API Key with a key from your sandbox account.
