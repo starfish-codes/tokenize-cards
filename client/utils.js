@@ -51,3 +51,4 @@ export function renderResultMessage(result) {
   containerEl.style.display = 'none';
   resultContainerEl.style.display = 'block';
 }
+

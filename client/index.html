@@ -19,12 +19,37 @@
 </head>
 
 <body>
-  <main>
+
+
+  <div class="container">
     <div class="logo-wrap">
       <div class="logo">
         <img src="./assets/svg/logo.svg" />
       </div>
     </div>
+    <div class="header">
+        <h2>Cards</h2>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Scheme</th>
+                <th>Account Number</th>
+                <th>CardHolder Name</th>
+                <th>Network Token</th>
+                <th>ID&V</th>
+                <th>Creation Date</th>
+                <th>Expiration Date</th>
+    
+            </tr>
+        </thead>
+        <tbody id="cardsTableBody">
+        </tbody>
+    </table>
+</div>
+
+  <main>
     <h1>Create a <a href="https://hellgate.io">Hellgate®</a> Token</h1>
 
     <div class="form-input" id="card-form"></div>
@@ -50,7 +75,9 @@
       <p class="text-tokenization">Secure Tokenization by Hellgate®</p>
     </div>
 
+  
   </main>
+
 </body>
 
 </html>

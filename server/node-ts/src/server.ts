@@ -41,4 +41,34 @@ app.get('/config', async (_: Request, res: Response): Promise<void> => {
   });
 });
 
+
+app.get('/tokens', async (_: Request, res: Response): Promise<void> => {
+  const headers = new Headers();
+  headers.set('Content-Type', 'application/json');
+  headers.set('Accept', 'application/json');
+  headers.set('X-API-KEY', process.env.HELLGATE_API_KEY);
+
+  const request = new Request(
+    process.env.HELLGATE_BACKEND + '/tokens',
+    {
+      method: 'GET',
+      headers: headers,
+    }
+  );
+
+  const response = await fetch(request);
+  const data = await response.json();
+  console.log(data)
+
+  if (!response.ok) {
+    res.status(response.status).send(data);
+    return;
+  }
+
+
+  res.send(data);
+});
+
+
+
 app.listen(4711, (): void => console.log(`Server listening on port ${4711}!`));
