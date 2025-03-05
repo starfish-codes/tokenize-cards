@@ -9,8 +9,8 @@ export async function fetchTokens() {
       populateEmptyTokensList();
     }
   } catch (error) {
-    console.error('Error fetching tokens:', error);
-    tbody.innerHTML = `<tr><td colspan="8" class="loader-container">Failed to load data</td></tr>`;
+    console.log('failed to load cards: please check network status');
+    populateFailedFetchCards();
   }
 }
 
@@ -66,7 +66,20 @@ function populateEmptyTokensList() {
     </td>
   </tr>
 `;
+}
+function populateFailedFetchCards() {
+  const tbody = document.getElementById('cardsTableBody');
 
+  tbody.innerHTML = `
+    <tr>
+      <td colspan="8" class="loader-container">
+        <div class="no-tokens-container">
+          <img src="./assets/svg/card.svg" />
+          <div class="no-tokens-text">Failed To Load Tokens</div>
+        </div>
+      </td>
+    </tr>
+  `;
 }
 
 function populateTable(cards) {
@@ -110,7 +123,6 @@ function populateTable(cards) {
       <td>${createdAt}</td>
       <td>${expiryDate}</td>
     `;
-
 
     tbody.appendChild(row);
   });
