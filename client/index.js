@@ -7,10 +7,15 @@ import {
   toggleLoading,
 } from './utils.js';
 
+import {
+  fetchTokens
+} from './cards-list.js';
+
 let cardHolderField;
 
 document.addEventListener('DOMContentLoaded', async () => {
   const { session_id, backend_url } = await fetchConfig();
+  const tokens = await fetchTokens();
   if (!session_id) return;
 
   const { Hellgate } = window;
@@ -30,8 +35,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Function to fetch session ID and backend URL
 function fetchConfig() {
+  const tbody = document.getElementById('cardsTableBody');
+  tbody.innerHTML = `
+      <tr id="loaderRow">
+          <td colspan="8" class="loader-container">
+              <div class="loader"></div>
+          </td>
+      </tr>
+  `;
+
   return fetch('/config').then(r => r.json());
 }
+
 
 // Function to setup event listeners for 3DS handler
 function setup3DSHandler(threeDSHandler) {
