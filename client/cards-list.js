@@ -1,9 +1,19 @@
+import { tokenizeButton } from './index.js'
+
 export async function fetchTokens() {
+  const tbody = document.getElementById('cardsTableBody');
+  tbody.innerHTML = `
+      <tr id="loaderRow">
+          <td colspan="8" class="loader-container">
+              <div class="loader"></div>
+          </td>
+      </tr>
+  `;
   try {
     const response = await fetch('/tokens');
     const jsonResponse = await response.json();
     if (jsonResponse.data.length) {
-      populateTokenizeButton();
+      tokenizeButton();
       populateTable(jsonResponse);
     } else {
       populateEmptyTokensList();
@@ -35,18 +45,6 @@ function accountNumberMask(
 
 function maskedNumbers(length) {
   return '●'.repeat(Math.max(0, length));
-}
-
-function populateTokenizeButton() {
-  const header = document.querySelector('.header');
-  const button = document.createElement('button');
-  button.className = 'download-btn';
-  button.innerHTML = `
-    <img src="./assets/svg/add.svg" />
-    Tokenize Card
-`;
-
-  header.appendChild(button);
 }
 
 function populateEmptyTokensList() {
