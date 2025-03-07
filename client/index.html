@@ -19,7 +19,14 @@
   </head>
 
   <body>
-    <div id="popup" class="popup">Token created successfully!</div>
+
+    <div id="deleteModal">
+      <div class="modal-content">
+        <p>Are you sure you want to delete this tokenized card?</p>
+        <button id="confirmDelete">Yes</button>
+        <button id="cancelDelete">No</button>
+      </div>
+    </div>
 
     <div class="container">
       <div class="logo-wrap">
@@ -41,6 +48,8 @@
             <th>ID&V</th>
             <th>Creation Date</th>
             <th>Expiration Date</th>
+            <th></th>
+
           </tr>
         </thead>
         <tbody id="cardsTableBody"></tbody>
@@ -56,6 +65,9 @@
         </div>
          
         <div class="tokenize-form">
+
+          <div class="test-cards-text">
+            Please note that only our test cards are supported for testing. Click <a href='https://developer.hellgate.dev/resources/test-card'>here</a> to view them.</div>  
           <div class="form-group">
             <label for="card-number">Card Number *
             <div id="card-number" class="input-field"></div>
@@ -79,10 +91,6 @@
               placeholder="John Doe"
             ></div>
           </div>
-
-          <label for="card-number">
-            Want to try our test cards? Click <a href="https://developer.hellgate.dev/resources/test-card">here</a>.
-          </label>  
 
           <button id="submit-button">Submit</button>
         </div>

@@ -58,7 +58,6 @@ app.get('/tokens', async (_: Request, res: Response): Promise<void> => {
 
   const response = await fetch(request);
   const data = await response.json();
-  console.log(data)
 
   if (!response.ok) {
     res.status(response.status).send(data);
@@ -67,6 +66,39 @@ app.get('/tokens', async (_: Request, res: Response): Promise<void> => {
 
 
   res.send(data);
+});
+
+
+app.delete('/token/:id', async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;  
+  const headers = new Headers();
+  headers.set('Content-Type', 'application/json');
+  headers.set('Accept', 'application/json');
+  headers.set('X-API-KEY', process.env.HELLGATE_API_KEY as string); 
+
+  const request = new Request(
+    `${process.env.HELLGATE_BACKEND}/tokens/${id}`, 
+    {
+      method: 'DELETE', 
+      headers: headers,
+    }
+  );
+
+  try {
+    const response = await fetch(request);
+    console.log(response)
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      res.status(response.status).send(data);
+      return;
+    }
+
+    res.send(data);
+  } catch (error) {
+    res.status(500).send({ error: 'Failed to delete the token' });
+  }
 });
 
 
