@@ -1,14 +1,8 @@
-import { tokenizeButton } from './index.js'
+import { tokenizeButton } from './index.js';
+import { deleteBtn,loadingTokens } from './utils.js';
 
 export async function fetchTokens() {
-  const tbody = document.getElementById('cardsTableBody');
-  tbody.innerHTML = `
-      <tr id="loaderRow">
-          <td colspan="8" class="loader-container">
-              <div class="loader"></div>
-          </td>
-      </tr>
-  `;
+  loadingTokens()
   try {
     const response = await fetch('/tokens');
     const jsonResponse = await response.json();
@@ -97,31 +91,70 @@ function populateTable(cards) {
     const account_number_length = card.account_number_length;
     const account_number_last_four = card.account_number_last_four;
 
-    row.innerHTML = `
-      <td>${card.id.slice(0, 8)}...</td>
-      <td>${card.scheme}</td>
-      <td>
-        ${accountNumberMask(
-          issuer_identification_number,
-          account_number_length,
-          account_number_last_four
-        )}
-      </td>
-      <td>${card.cardholder_name}</td>
-      <td>
-        <span class="status ${card.network_token_status}">
-          ${card.network_token_status}
-        </span>
-      </td>
-      <td>
-        <span class="status ${card.identity_and_verification}">
-          ${card.identity_and_verification}
-        </span>
-      </td>
-      <td>${createdAt}</td>
-      <td>${expiryDate}</td>
-    `;
+    const deleteButton = document.createElement('button');
+deleteButton.classList.add('delete-btn');
+deleteButton.innerHTML = deleteBtn;
 
-    tbody.appendChild(row);
+const actionCell = document.createElement('td');
+actionCell.appendChild(deleteButton);
+
+row.innerHTML = `
+  <td>${card.id.slice(0, 8)}...</td>
+  <td>${card.scheme}</td>
+  <td>
+    ${accountNumberMask(
+      issuer_identification_number,
+      account_number_length,
+      account_number_last_four
+    )}
+  </td>
+  <td>${card.cardholder_name}</td>
+  <td>
+    <span class="status ${card.network_token_status}">
+      ${card.network_token_status}
+    </span>
+  </td>
+  <td>
+    <span class="status ${card.identity_and_verification}">
+      ${card.identity_and_verification}
+    </span>
+  </td>
+  <td>${createdAt}</td>
+  <td>${expiryDate}</td>
+`;
+
+row.appendChild(actionCell);
+tbody.appendChild(row);
+
+deleteButton.addEventListener('click', () => {
+  const modal = document.querySelector('#deleteModal');
+  modal.style.display = 'block';
+
+  document.querySelector('#cancelDelete').addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+
+  document.querySelector('#confirmDelete').addEventListener('click', async () => {
+    loadingTokens()
+    modal.style.display = 'none';
+    await deleteCard(card.id);
+    fetchTokens()
+  });
+});
   });
 }
+
+async function deleteCard(id) {
+  try{
+    const response = await fetch(`/token/${id}`, {
+      method: 'DELETE',  
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (e){
+    console.log("failed to delete a tokenized card")
+  }
+  };
+  
+  
