@@ -1,93 +1,141 @@
 import {
   cardFormStyle,
   modalEl,
-  renderResultMessage,
-  retryButtonEl,
   submitButtonEl,
-  toggleLoading,
+  toggleLoadingCards,
 } from './utils.js';
 
-import {
-  fetchTokens
-} from './cards-list.js';
+import { fetchTokens } from './cards-list.js';
 
 let cardHolderField;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const { session_id, backend_url } = await fetchConfig();
-  const tokens = await fetchTokens();
-  if (!session_id) return;
-
-  const { Hellgate } = window;
-  const client = await Hellgate.init(session_id, {
-    base_url: backend_url,
-    challenge_3ds_container: document.getElementById('challenge'),
-  });
-  const cardHandler = client.use('CARD');
-  const threeDSHandler = client.use('3DS');
-
-  await setupCardForm(cardHandler);
-  setup3DSHandler(threeDSHandler);
-  setupButtonListeners(cardHandler);
-
-  toggleLoading(false);
+  try {
+    await fetchTokens();
+  } catch (error) {
+    console.error('Error fetching tokens:', error);
+  }
 });
 
-// Function to fetch session ID and backend URL
-function fetchConfig() {
-  const tbody = document.getElementById('cardsTableBody');
-  tbody.innerHTML = `
-      <tr id="loaderRow">
-          <td colspan="8" class="loader-container">
-              <div class="loader"></div>
-          </td>
-      </tr>
+export function tokenizeButton() {
+  const header = document.querySelector('.header');
+  if (header.querySelector('.download-btn')) {
+    return; 
+  }
+  const button = document.createElement('button');
+  button.className = 'download-btn';
+  button.innerHTML = `
+    <img src="./assets/svg/add.svg" />
+    Tokenize Card
   `;
 
-  return fetch('/config').then(r => r.json());
-}
+  header.appendChild(button);
+  button.addEventListener('click', async event => {
+    event.preventDefault();
+    toggleLoadingCards(true);
 
+    try {
+      const main = document.querySelector('main');
+      const tokenize_form = document.querySelector('.tokenize-card-container');
 
-// Function to setup event listeners for 3DS handler
-function setup3DSHandler(threeDSHandler) {
-  threeDSHandler.onStartChallenge(() => (modalEl.style.display = 'block'));
-  threeDSHandler.onChallengeFinished(() => (modalEl.style.display = 'none'));
-}
+      main.style.display = 'block';
 
-// Function to create and mount card form and cardholder name field
-async function setupCardForm(cardHandler) {
-  const cardForm = await cardHandler.createForm({ style: cardFormStyle });
-  cardHolderField = cardHandler.createTextField({
-    placeholder: 'Cardholder Name',
+      main.addEventListener('click', () => {
+        main.style.display = 'none';
+      });
+      tokenize_form.addEventListener('click', event => {
+        event.stopPropagation();
+      });
+
+      const { session_id, backend_url } = await fetchConfig();
+      if (!session_id) throw new Error('Session ID is missing');
+
+      const { Hellgate } = window;
+      const client = await Hellgate.init(session_id, {
+        base_url: backend_url,
+        challenge_3ds_container: document.getElementById('challenge'),
+      });
+      const cardHandler = client.use('CARD');
+      const threeDSHandler = client.use('3DS');
+
+      await setupCardForm(cardHandler);
+      setup3DSHandler(threeDSHandler);
+      setupButtonListeners(cardHandler);
+    } catch (error) {
+      console.error('Error initializing tokenization:', error);
+    } finally {
+      toggleLoadingCards(false);
+    }
   });
-
-  await Promise.all([
-    cardForm.mount('#card-form'),
-    cardHolderField.mount('#cardholderName'),
-  ]);
 }
 
-// Function to setup event listeners for buttons
+async function fetchConfig() {
+  try {
+    const response = await fetch('/config');
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching config:', error);
+    return {};
+  }
+}
+
+function setup3DSHandler(threeDSHandler) {
+  threeDSHandler.onStartChallenge(() => {
+    if (modalEl) {
+      modalEl.style.display = 'block';
+    }
+  });
+  threeDSHandler.onChallengeFinished(() => {
+    if (modalEl) {
+      modalEl.style.display = 'none';
+    }
+  });
+}
+
+async function setupCardForm(cardHandler) {
+  try {
+    const { cardNumber, expiryDate, securityCode } =
+      await cardHandler.createFormFields({
+        style: cardFormStyle,
+        cardNumber: { placeholder: '0000 0000 0000 0000' },
+        securityCode: { placeholder: '000' },
+      });
+    cardHolderField = cardHandler.createTextField({
+      style: cardFormStyle,
+      placeholder: 'John Doe',
+    });
+
+    await Promise.all([
+      cardNumber.mount('#card-number'),
+      expiryDate.mount('#expiry-date'),
+      securityCode.mount('#security-code'),
+      cardHolderField.mount('#cardholder-Name'),
+    ]);
+  } catch (error) {
+    console.error('Error setting up card form:', error);
+  }
+}
+
 function setupButtonListeners(cardHandler) {
   submitButtonEl.addEventListener('click', () => handleSubmit(cardHandler));
-  retryButtonEl.addEventListener('click', () => {
-    modalEl.style.display = 'none';
-    location.reload();
-  });
 }
 
-// Function to handle form submission
 async function handleSubmit(cardHandler) {
-  toggleLoading(true);
+  toggleLoadingCards(true);
 
   try {
-    const result = await cardHandler.process({
+    await cardHandler.process({
       cardholder_name: cardHolderField,
     });
-    renderResultMessage(result);
-  } catch (e) {
-    console.log(e.message);
-  }
+    
+    cardHandler.reset();
+    await fetchTokens();
 
-  toggleLoading(false);
+    const mainContainer = document.querySelector('main');
+    mainContainer.style.display = 'none';
+  } catch (error) {
+    console.error('Error processing card:', error);
+  } finally {
+    toggleLoadingCards(false);
+  }
 }

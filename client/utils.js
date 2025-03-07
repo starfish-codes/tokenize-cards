@@ -2,12 +2,9 @@ export const submitButtonEl = document.getElementById('submit-button');
 export const retryButtonEl = document.getElementById('retry-button');
 export const modalEl = document.getElementById('modal');
 
-const cardDataEl = document.getElementById('card-form');
-const cardNameEl = document.getElementById('cardholderName');
+const main = document.querySelector('main');
+const tokenizeForm = document.querySelector('.tokenize-form');
 const loadingEl = document.getElementById('loading-dot');
-const resultEl = document.getElementById('message');
-const resultContainerEl = document.getElementById('challenge-result');
-const containerEl = document.getElementById('container');
 
 export const cardFormStyle = {
   fonts: [
@@ -15,40 +12,27 @@ export const cardFormStyle = {
   ],
   base: {
     fontFamily: 'Nunito, sans-serif',
-    color: 'rgb(14, 23, 38)',
+    color: '#081f2d',
     fontSize: '16px',
     fontWeight: 400,
-    '::placeholder': { color: '#6b7280' },
+    '::placeholder': { color: '#081f2d' },
     ':disabled': { color: '#aaa' },
     padding: '0px',
     backgroundColor: 'transparent',
   },
   complete: { color: 'cornflowerblue' },
-  invalid: { color: 'lightcoral' },
+  invalid: { color: 'danger' },
 };
 
-export function toggleLoading(boolean) {
-  submitButtonEl.style.display = boolean ? 'none' : 'block';
-  cardDataEl.style.display = boolean ? 'none' : 'block';
-  cardNameEl.style.display = boolean ? 'none' : 'block';
+export function toggleLoadingCards(boolean) {
   loadingEl.style.display = boolean ? 'block' : 'none';
+  tokenizeForm.style.display = boolean ? 'none' : 'block';
 }
 
-export function renderResultMessage(result) {
-  const { status, data } = result;
-  const isSuccess = status === 'success';
-  const icon = isSuccess ? 'check.svg' : 'error.svg';
-  const htmlIcon = `
-  <div class="check">
-    <img src="./assets/svg/${icon}" />
-  </div>`;
-  modalEl.style.display = 'block';
 
-  resultEl.innerHTML = isSuccess
-    ? `Tokenization completed.<br> ${htmlIcon} Token ID <br> ${data.token_id}`
-    : `Tokenization failed.<br> ${htmlIcon} ${data.message}`;
+export function renderResultMessage() {
 
-  containerEl.style.display = 'none';
-  resultContainerEl.style.display = 'block';
+  main.style.display = "none";
+
 }
 

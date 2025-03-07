@@ -1,83 +1,92 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tokenization</title>
 
-  <title>Tokenization</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair:wght@300&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Playfair:wght@300&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
-    rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <script src="https://sdk.hellgate.io/web/v3.5.1/hellgate-sdk.min.js"></script>
+    <script type="module" src="./index.js" defer></script>
+  </head>
 
-  <link rel="stylesheet" href="./assets/css/style.css" />
-  <script src="https://sdk.hellgate.io/web/v3.5.1/hellgate-sdk.min.js"></script>
-  <script type="module" src="./index.js" defer></script>
-</head>
+  <body>
+    <div id="popup" class="popup">Token created successfully!</div>
 
-<body>
-
-
-  <div class="container">
-    <div class="logo-wrap">
-      <div class="logo">
-        <img src="./assets/svg/logo.svg" />
+    <div class="container">
+      <div class="logo-wrap">
+        <div class="logo">
+          <img src="./assets/svg/logo.svg" />
+        </div>
       </div>
-    </div>
-    <div class="header">
+      <div class="header">
         <h2>Cards</h2>
-    </div>
-    <table>
+      </div>
+      <table>
         <thead>
-            <tr>
-                <th>ID</th>
-                <th>Scheme</th>
-                <th>Account Number</th>
-                <th>CardHolder Name</th>
-                <th>Network Token</th>
-                <th>ID&V</th>
-                <th>Creation Date</th>
-                <th>Expiration Date</th>
-    
-            </tr>
+          <tr>
+            <th>ID</th>
+            <th>Scheme</th>
+            <th>Account Number</th>
+            <th>CardHolder Name</th>
+            <th>Network Token</th>
+            <th>ID&V</th>
+            <th>Creation Date</th>
+            <th>Expiration Date</th>
+          </tr>
         </thead>
-        <tbody id="cardsTableBody">
-        </tbody>
-    </table>
-</div>
+        <tbody id="cardsTableBody"></tbody>
+      </table>
+    </div>
 
-  <main>
-    <h1>Create a <a href="https://hellgate.io">Hellgate®</a> Token</h1>
-
-    <div class="form-input" id="card-form"></div>
-    <div id="cardholderName" class="form-input"></div>
-
-    <div id="loading-dot"></div>
-
-    <button id="submit-button">Submit</button>
-
-    <div id="modal" class="modal">
-      <div class="tokenization-component">
-
-        <div id="challenge-result">
-          <div id="message"></div>
-
-          <button id="retry-button">Retry</button>
-
+    <main>
+      <div class="tokenize-card-container">
+        <div id="loading-dot">
+            <div  class="loader-container">
+                <div class="loader"></div>
+            </div>
         </div>
-        <div id="container">
-          <div id="challenge" class="bottom"></div>
+         
+        <div class="tokenize-form">
+          <div class="form-group">
+            <label for="card-number">Card Number *
+            <div id="card-number" class="input-field"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="expiry-date">Expiration Date *</label>
+            <div id="expiry-date" class="input-field"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="security-code">Security Code *</label>
+            <div id="security-code" class="input-field"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="cardholder-name">Cardholder Name</label>
+            <div
+              id="cardholder-Name"
+              class="input-field"
+              placeholder="John Doe"
+            ></div>
+          </div>
+
+          <label for="card-number">
+            Want to try our test cards? Click <a href="https://developer.hellgate.dev/resources/test-card">here</a>.
+          </label>  
+
+          <button id="submit-button">Submit</button>
         </div>
       </div>
-      <p class="text-tokenization">Secure Tokenization by Hellgate®</p>
-    </div>
-
-  
-  </main>
-
-</body>
-
+    </main>
+  </body>
 </html>
