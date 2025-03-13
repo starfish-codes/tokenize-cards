@@ -14,6 +14,5 @@ EXPOSE 4711
 
 ENV HELLGATE_BACKEND=""
 ENV HELLGATE_API_KEY=""
-ENV CLIENT_DIR="/app/client"
 
-CMD ["npm", "start"]
+ENTRYPOINT CLIENT_DIR="/app/client" npm start
